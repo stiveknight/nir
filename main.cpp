@@ -2,96 +2,95 @@
 #include <fstream>
 #include "Graph.h"
 #include "data.h"
+#include "utils.h"
+#include "mthread.h"
+#include "context.h"
+#include <thread>
+#include <mutex>
 #include <algorithm>
+#include <time.h>
 
 using namespace std;
 
 
-int main() {
-    data_t data;
-//    setlocale(LC_ALL, "Russian");
-    string n;
-    cin >> n;
-    string fname = "../graphs" + n + ".txt";
-//    cout << "file name: ";
-//    cin >> fname;
-    ifstream infile(fname);
-    if (!infile) cout << "NO"<< endl;
+void thread_mod(data_t * data) {
+    std::cout << "Thread mod start" << std::endl;
+    int nthreads = std::thread::hardware_concurrency();
+    if(nthreads == 0)
+        nthreads = 2;
+    // nthreads = 4;
+    std::cout << "Count of threads: " << nthreads << std::endl;
+    std::vector<std::thread> threads;
+    for(int i = 0; i < nthreads; i++) {
+        std::thread thr(consumer, data, i);
+        threads.emplace_back(std::move(thr));
+    }
+    producer(data);
+    data->queue.stop_push = 1;
 
+    for(auto& thr : threads) {
+        thr.join();
+    }
+
+    std::cout << "Done!" << std::endl;
+}
+
+
+void single_mod(data_t * data) {
+    ifstream infile(data->infilename);
+    if (!infile) {
+        cout << "NO" << endl;
+        exit(EXIT_FAILURE);
+    }
     std::string s;
     for (infile >> s; !infile.eof(); infile >> s) {
         Graph g(s);
         set<int> cycles = g.girth();
-        if (cycles.empty()) {
-            data.gir.push_back(-1);
-            data.circle.push_back(-1);
-            data.even_gir.push_back(-1);
-            data.odd_gir.push_back(-1);
-        } else {
-            data.gir.push_back(*(cycles.begin()));
-            data.circle.push_back(*(max_element(cycles.begin(), cycles.end())));
-
-            int elem = -1;
-            for (int item: cycles) {
-                if (item % 2 == 0) {
-                    elem = item;
-                    break;
-                }
-
-            }
-            data.even_gir.push_back(elem);
-
-            elem = -1;
-            for (int item: cycles) {
-                if (item % 2 == 1) {
-                    elem = item;
-                    break;
-                }
-            }
-            data.odd_gir.push_back(elem);
-        }
-
-        for (int i = 0; i<data.gir.size(); i++)
-            data.map_gir[data.gir[i]]++;
-
-        for (int i = 0; i<data.circle.size(); i++)
-            data.map_circle[data.circle[i]]++;
-
-        for (int i = 0; i<data.even_gir.size(); i++)
-            data.map_even_gir[data.even_gir[i]]++;
-
-        for (int i = 0; i<data.odd_gir.size(); i++)
-            data.map_odd_gir[data.odd_gir[i]]++;
-
+        set_statistic(data, cycles);
     }
-    ofstream fout("output.txt");
-//    cout << gir.size() << ' ' << circle.size() << ' ' << even_gir.size() << ' ' << odd_gir.size();
-    for (int item: data.gir)
+}
+
+
+
+void run(data_t * data) {
+    switch (data->multithread_mode) {
+        case TM_SINGLE:
+            single_mod(data);
+            break;
+        case TM_MULTI:
+            thread_mod(data);
+            break;
+    }
+
+    ofstream fout(data->outdir + "output.txt");
+
+    for (int item:data->gir)
         fout << item << " ";
     fout << endl;
-    for (int item: data.circle)
+    for (int item: data->circle)
         fout << item << " ";
     fout << endl;
-    for (int item: data.even_gir)
+    for (int item: data->even_gir)
         fout << item << " ";
     fout << endl;
-    for (int item: data.odd_gir)
+    for (int item: data->odd_gir)
         fout << item << " ";
     fout << endl;
 
-    ofstream fout1("gir" + n + ".txt");
-    for (auto item: data.map_gir)
-        fout1 << item.first << " : " << item.second << endl;
+    save_map(data->map_gir, data->outdir + "gir" + to_string(data->vertex_count) + ".txt");
+    save_map(data->map_circle, data->outdir + "circle" + to_string(data->vertex_count) + ".txt");
+    save_map(data->map_even_gir, data->outdir + "even_gir" + to_string(data->vertex_count) + ".txt");
+    save_map(data->map_odd_gir, data->outdir + "odd_gir" + to_string(data->vertex_count) + ".txt");
+}
 
-    ofstream fout2("circle" + n + ".txt");
-    for (auto item: data.map_circle)
-        fout2 << item.first << " : " << item.second << endl;
 
-    ofstream fout3("even_gir" + n + ".txt");
-    for (auto item: data.map_even_gir)
-        fout3 << item.first << " : " << item.second << endl;
+int main(int argc, char *argv[]) {
+    clock_t start_time = clock();
+    data_t data;
 
-    ofstream fout4("odd_gir" + n + ".txt");
-    for (auto item: data.map_odd_gir)
-        fout4 << item.first << " : " << item.second << endl;
+    data_init(&data, argc, argv);
+    run(&data);
+
+    std::cout << "\ntime: " << ((float)(clock() - start_time)) / CLOCKS_PER_SEC << std::endl;
+    return 0;
 }

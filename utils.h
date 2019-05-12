@@ -7,6 +7,8 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
+#include <map>
 
 std::vector<std::string> split(const std::string& str, const std::string& delim)
 {
@@ -22,6 +24,12 @@ std::vector<std::string> split(const std::string& str, const std::string& delim)
     }
     while (pos < str.length() && prev < str.length());
     return tokens;
+}
+
+void save_map(std::map<int, int> &m, std::string filename) {
+    std::ofstream fout(filename);
+    for (auto item: m)
+        fout << item.first << " : " << item.second << std::endl;
 }
 
 #endif //NIR_UTILS_H
