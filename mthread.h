@@ -18,9 +18,37 @@ void consumer(data_t * data, int num) {
         }
         Graph graph(task.task);
         set<int> cycles = graph.girth();
+        int elem_gir, elem_circle, elem_even_gir, elem_odd_gir;
+        if (cycles.empty()) {
+            elem_gir = -1;
+            elem_circle = -1;
+            elem_even_gir = -1;
+            elem_odd_gir = -1;
+        } else {
+            elem_gir = *(cycles.begin());
+            elem_circle = *(max_element(cycles.begin(), cycles.end()));
+
+            int elem = -1;
+            for (int item: cycles) {
+                if (item % 2 == 0) {
+                    elem = item;
+                    break;
+                }
+            }
+            elem_even_gir = elem;
+
+            elem = -1;
+            for (int item: cycles) {
+                if (item % 2 == 1) {
+                    elem = item;
+                    break;
+                }
+            }
+            elem_odd_gir = elem;
+        }
         {
             std::lock_guard<std::mutex> lock(data->queue.cnt_elem_lock);
-            set_statistic(data, cycles);
+            set_statistic(data, elem_gir, elem_circle, elem_even_gir, elem_odd_gir);
         }
     }
     queue_cancel(&data->queue);

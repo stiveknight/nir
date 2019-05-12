@@ -46,7 +46,35 @@ void single_mod(data_t * data) {
     for (infile >> s; !infile.eof(); infile >> s) {
         Graph g(s);
         set<int> cycles = g.girth();
-        set_statistic(data, cycles);
+        int elem_gir, elem_circle, elem_even_gir, elem_odd_gir;
+        if (cycles.empty()) {
+            elem_gir = -1;
+            elem_circle = -1;
+            elem_even_gir = -1;
+            elem_odd_gir = -1;
+        } else {
+            elem_gir = *(cycles.begin());
+            elem_circle = *(max_element(cycles.begin(), cycles.end()));
+
+            int elem = -1;
+            for (int item: cycles) {
+                if (item % 2 == 0) {
+                    elem = item;
+                    break;
+                }
+            }
+            elem_even_gir = elem;
+
+            elem = -1;
+            for (int item: cycles) {
+                if (item % 2 == 1) {
+                    elem = item;
+                    break;
+                }
+            }
+            elem_odd_gir = elem;
+        }
+        set_statistic(data, elem_gir, elem_circle, elem_even_gir, elem_odd_gir);
     }
 }
 

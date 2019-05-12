@@ -10,6 +10,7 @@
 
 int data_init(data_t * data, int argc, char *argv[]) {
     data->outdir = "../result/";
+    queue_init(&data->queue);
     if (argc > 1){
         data->multithread_mode = TM_SINGLE;
         int correct = 0;
