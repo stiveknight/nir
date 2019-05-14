@@ -74,6 +74,8 @@ void single_mod(data_t * data) {
             }
             elem_odd_gir = elem;
         }
+
+
         set_statistic(data, elem_gir, elem_circle, elem_even_gir, elem_odd_gir);
     }
 }
@@ -105,10 +107,10 @@ void run(data_t * data) {
         fout << item << " ";
     fout << endl;
 
-    save_map(data->map_gir, data->outdir + "gir" + to_string(data->vertex_count) + ".txt");
-    save_map(data->map_circle, data->outdir + "circle" + to_string(data->vertex_count) + ".txt");
-    save_map(data->map_even_gir, data->outdir + "even_gir" + to_string(data->vertex_count) + ".txt");
-    save_map(data->map_odd_gir, data->outdir + "odd_gir" + to_string(data->vertex_count) + ".txt");
+    save_map(data->map_gir, data->outdir + "gir" + data->vertex_count + ".txt");
+    save_map(data->map_circle, data->outdir + "circle" + data->vertex_count + ".txt");
+    save_map(data->map_even_gir, data->outdir + "even_gir" + data->vertex_count + ".txt");
+    save_map(data->map_odd_gir, data->outdir + "odd_gir" + data->vertex_count + ".txt");
 }
 
 

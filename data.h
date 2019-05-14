@@ -19,7 +19,7 @@ typedef enum {
 typedef struct data_t {
     string infilename;
     string outdir;
-    int vertex_count;
+    string vertex_count;
     multithread_mode_t multithread_mode;
     vector<int> gir;
     vector<int> circle;

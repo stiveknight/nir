@@ -10,22 +10,19 @@
 #include "Graph.h"
 
 void set_statistic(data_t * data, int elem_gir, int elem_circles, int elem_even_gir, int elem_odd_gir) {
+
     data->gir.push_back(elem_gir);
     data->circle.push_back(elem_circles);
     data->even_gir.push_back(elem_even_gir);
     data->odd_gir.push_back(elem_odd_gir);
 
-    for (int i = 0; i < data->gir.size(); i++)
-        data->map_gir[data->gir[i]]++;
+    data->map_gir[elem_gir]++;
 
-    for (int i = 0; i < data->circle.size(); i++)
-        data->map_circle[data->circle[i]]++;
+    data->map_circle[elem_circles]++;
 
-    for (int i = 0; i < data->even_gir.size(); i++)
-        data->map_even_gir[data->even_gir[i]]++;
+    data->map_even_gir[elem_even_gir]++;
 
-    for (int i = 0; i < data->odd_gir.size(); i++)
-        data->map_odd_gir[data->odd_gir[i]]++;
+    data->map_odd_gir[elem_odd_gir]++;
 }
 
 #endif //NIR_CONTEXT_H

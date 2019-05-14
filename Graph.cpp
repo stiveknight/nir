@@ -59,7 +59,7 @@ void dfs(Graph *g, int v, vector<int> &used, vector<int> &p, set<int> &cycle) { 
             }
         }
     }
-    used[v] = 2;
+    used[v] = 0;
 }
 
 
@@ -72,9 +72,13 @@ set<int> Graph::girth() {
         p.push_back(-1);
         used.push_back(0);
     }
-    for (int i = 0; i<n; i++) {
-        if (used[i] == 0)
-            dfs(this, i, used, p, cycle);
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            p[j] = -1;
+            used[j] = 0;
+        }
+        dfs(this, i, used, p, cycle);
     }
     return cycle;
 

@@ -14,12 +14,14 @@ int data_init(data_t * data, int argc, char *argv[]) {
     if (argc > 1){
         data->multithread_mode = TM_SINGLE;
         int correct = 0;
-        const char *opt_string = "msf:";
+        const char *opt_string = "n:msf:";
         for (;;) {
             int opt = getopt(argc, argv, opt_string);
             if (-1 == opt)
                 break;
             switch (opt) {
+                case 'n':
+                    data->vertex_count = optarg;
                 case 'm':
                     data->multithread_mode = TM_MULTI;
                     break;
@@ -45,7 +47,7 @@ int data_init(data_t * data, int argc, char *argv[]) {
         printf("Enter count of vertex: ");
         std::cin >> data->vertex_count;
         string dir = "../files/";
-        string name = "graphs" + to_string(data->vertex_count) + ".txt";
+        string name = "graphs" + data->vertex_count + ".txt";
         data->infilename = dir + name;
         string s;
         printf("Enter thread mod [s/m]: ");
