@@ -25,10 +25,13 @@ typedef struct data_t {
     vector<int> circle;
     vector<int> even_gir;
     vector<int> odd_gir;
+    vector<string> vec_same;
     map<int, int> map_gir;
     map<int, int> map_circle;
     map<int, int> map_even_gir;
     map<int, int> map_odd_gir;
+    map<int, int> map_same;
+
 
     queue_t queue;
     std::mutex count_elem_lock;

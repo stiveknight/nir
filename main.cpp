@@ -46,6 +46,9 @@ void single_mod(data_t * data) {
     for (infile >> s; !infile.eof(); infile >> s) {
         Graph g(s);
         set<int> cycles = g.girth();
+//        for (int item: cycles)
+//            cout << item << " ";
+//        cout << s;
         int elem_gir, elem_circle, elem_even_gir, elem_odd_gir;
         if (cycles.empty()) {
             elem_gir = -1;
@@ -76,7 +79,7 @@ void single_mod(data_t * data) {
         }
 
 
-        set_statistic(data, elem_gir, elem_circle, elem_even_gir, elem_odd_gir);
+        set_statistic(data, s, elem_gir, elem_circle, elem_even_gir, elem_odd_gir);
     }
 }
 
@@ -91,26 +94,16 @@ void run(data_t * data) {
             thread_mod(data);
             break;
     }
+//
+//    ofstream fout(data->outdir + "same" + data->vertex_count + ".txt");
+//    for (const string &item:data->vec_same)
+//        fout << item << "\n";
+//    save_map(data->map_same, data->outdir + "same_stat" + data->vertex_count + ".txt");
 
-    ofstream fout(data->outdir + "output.txt");
-
-    for (int item:data->gir)
-        fout << item << " ";
-    fout << endl;
-    for (int item: data->circle)
-        fout << item << " ";
-    fout << endl;
-    for (int item: data->even_gir)
-        fout << item << " ";
-    fout << endl;
-    for (int item: data->odd_gir)
-        fout << item << " ";
-    fout << endl;
-
-    save_map(data->map_gir, data->outdir + "gir" + data->vertex_count + ".txt");
-    save_map(data->map_circle, data->outdir + "circle" + data->vertex_count + ".txt");
-    save_map(data->map_even_gir, data->outdir + "even_gir" + data->vertex_count + ".txt");
-    save_map(data->map_odd_gir, data->outdir + "odd_gir" + data->vertex_count + ".txt");
+//    save_map(data->map_gir, data->outdir + "gir" + data->vertex_count + ".txt");
+//    save_map(data->map_circle, data->outdir + "circle" + data->vertex_count + ".txt");
+//    save_map(data->map_even_gir, data->outdir + "even_gir" + data->vertex_count + ".txt");
+//    save_map(data->map_odd_gir, data->outdir + "odd_gir" + data->vertex_count + ".txt");
 }
 
 

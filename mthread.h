@@ -18,6 +18,7 @@ void consumer(data_t * data, int num) {
         }
         Graph graph(task.task);
         set<int> cycles = graph.girth();
+
         int elem_gir, elem_circle, elem_even_gir, elem_odd_gir;
         if (cycles.empty()) {
             elem_gir = -1;
@@ -48,7 +49,7 @@ void consumer(data_t * data, int num) {
         }
         {
             std::lock_guard<std::mutex> lock(data->queue.cnt_elem_lock);
-            set_statistic(data, elem_gir, elem_circle, elem_even_gir, elem_odd_gir);
+            set_statistic(data, task.task,  elem_gir, elem_circle, elem_even_gir, elem_odd_gir);
         }
     }
     queue_cancel(&data->queue);
